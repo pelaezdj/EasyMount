@@ -12,7 +12,7 @@ Make an alias in your .bashrc for faster unmounting:
 
     alias umnt='mnt umnt'
 
-<BR>if, for example, the command you type is:
+<BR>if, for example, you type the command:
 
     mnt sde2
 then it will run the command:
