@@ -8,8 +8,9 @@ It will even semi-automatically mount/umount Luks-encrypted drives!
     mnt sdx
     mnt umnt sdx
 
-Make an alias in your .bashrc for faster unmounting:<BR>
-alias umnt\='mnt umnt'
+Make an alias in your .bashrc for faster unmounting:
+
+    alias umnt\='mnt umnt'
 
 If, for example, the command you type is:
 
