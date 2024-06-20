@@ -18,4 +18,6 @@ Then it will run the command:
 
     mount /dev/sde1 /mnt/sde
 
+Also automatically recognizes if "sudo" is necessary.
+
 Easy peasy!
