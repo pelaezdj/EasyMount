@@ -1,6 +1,6 @@
 I'm not a programmer but I'd like to share my nonsense.
 
-This will easily and semi-automatically mount drives from the command line.
+This will easily and semi-automatically mount drives from the command line.<BR>
 It will even semi-automatically mount Luks-encrypted drives!
 
 mnt DeviceName
