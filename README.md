@@ -19,7 +19,7 @@ then it will run the command:
 
     mount /dev/sde2 /mnt/sde2
 
-if, for example, the command you type is:
+<BR>if, for example, the command you type is:
 
     mnt sdb
 then it will run the command:
