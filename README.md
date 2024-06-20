@@ -6,7 +6,7 @@ It will even semi-automatically mount Luks-encrypted drives!
 mnt DeviceName
 mnt umnt DeviceName
 
-Make and alias in your .bashrc for faster unmounting:
-alias umnt='mnt umnt'
+Make an alias in your .bashrc for faster unmounting:
+"alias umnt='mnt umnt'"
 
 Easy peasy!
