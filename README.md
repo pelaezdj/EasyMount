@@ -2,8 +2,8 @@ I'm not a programmer but I'd like to share my nonsense.
 
 Just over 100 lines...
 
-This will easily and semi-automatically mount/umount drives from the command line.<BR>
-It will even semi-automatically mount/umount Luks-encrypted drives!
+This will easily and semi-automatically mount/umount drives from the command line.
+<BR>It will even semi-automatically mount/umount Luks-encrypted drives!
 
     mnt sdx
     mnt umnt sdx
@@ -26,6 +26,6 @@ then it will run the command:
 
     mount /dev/sdb1 /mnt/sdb
 
-It also automatically recognizes if "sudo" is necessary.
+<BR>It also automatically uses "sudo" when necessary.
 
 Easy peasy!
