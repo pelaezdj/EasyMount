@@ -1,0 +1,134 @@
+#!/bin/bash
+
+CMDCOLOR="\e[0;35m" # Purple
+NOCOLOR="\e[m"
+
+function SudoRun {
+	User="$(whoami)"
+	if [[ $User == "root" ]]; then
+		$1 $2 $3 $4 $5 $6 $7 $8 $9
+	else
+		sudo $1 $2 $3 $4 $5 $6 $7 $8 $9; fi
+}
+
+function EchoRun {
+	echo -e $CMDCOLOR"$1 $2 $3 $4 $5 $6 $7 $8 $9"$NOCOLOR
+	SudoRun $1 $2 $3 $4 $5 $6 $7 $8 $9
+}
+
+function KeepFirst {
+	SedString="s/^\(.\{"$1"\}\).*/\1/"
+	sed $SedString
+}
+
+function KeepLast {
+	SedString="s/^.*\(.\{"$1"\}\)$/\1/"
+	sed $SedString
+}
+
+function RemoveFirst {
+	SedString="s/^.\{"$1"\}//"
+	sed $SedString
+}
+
+function RemoveLast {
+	SedString="s/.\{"$1"\}$//"
+	sed $SedString
+}
+
+
+
+#########################
+#                       #
+#  Important Functions  #
+#                       #
+#########################
+
+function GetFilesystem {
+	User="$(whoami)"
+	if [[ $User == "root" ]]; then
+		Filesystem="$(blkid -o value -s TYPE /dev/$Dev)"
+	else
+		Filesystem="$(sudo blkid -o value -s TYPE /dev/$Dev)"; fi
+}
+
+function MountDevice {
+	SudoRun mkdir /mnt 2> /dev/null
+	SudoRun mkdir /mnt/$Dir 2> /dev/null
+
+	if [[ MapperDev == "" ]]; then
+		EchoRun mount /dev/$Dev /mnt/$Dir
+	else
+		EchoRun mount /dev/mapper/$MapperDev /mnt/$Dir; fi
+}
+
+function UnmountDevice {
+	if [[ MapperDev == "" ]]; then
+		EchoRun umount /dev/$Dev
+	else
+		EchoRun umount /dev/mapper/$MapperDev; fi
+
+	SudoRun rmdir /mnt/$Dir 2> /dev/null
+}
+
+function LuksOpen {
+	if [[ $Filesystem == "crypto_LUKS" ]]; then
+		EchoRun cryptsetup luksOpen /dev/$Dev $MapperDev; fi
+}
+
+function LuksClose {
+	if [[ $Filesystem == "crypto_LUKS" ]]; then
+		EchoRun cryptsetup luksClose /dev/mapper/$MapperDev; fi
+}
+
+
+function Proceed {
+	GetFilesystem
+	echo $Filesystem
+	
+	if [[ $Filesystem == "crypto_LUKS" ]]; then
+		MapperDev=$Dev"_crypt"; fi
+
+	if [[ $Mode == "mnt" ]]; then
+		LuksOpen
+		MountDevice
+	elif [[ $Mode == "umnt" ]]; then
+		UnmountDevice
+		LuksClose; fi
+}
+
+
+
+###################
+#                 #
+#  Program Start  #
+#                 #
+###################
+
+if [[ $1 == "umnt" || $1 == "umount" || $1 == "unmount" ]]; then
+	Mode="umnt"
+	Dev="$2"
+else
+	Mode="mnt"
+	Dev="$1"; fi
+
+Quit="yes"
+if [[ $Dev == "" ]]; then
+	echo No device specified.
+else
+	DevRm1="$(echo $Dev | RemoveLast 1)"
+	DevRm2="$(echo $Dev | RemoveLast 2)"
+
+	if [[ ! $DevRm1 == "sd" && ! $DevRm2 == "sd" ]]; then
+		echo -e "Unsupported Device \"$Dev\""
+
+	elif [[ $DevRm1 == "sd" ]]; then
+		Dir="$Dev"
+		Dev=$Dev"1"
+		Proceed
+	elif [[ $DevRm2 == "sd" ]]; then
+		PartNum="$(echo $Dev | KeepLast 1)"
+		if [[ $PartNum == "1" ]]; then Dir="$DevRm1"
+		                          else Dir="$Dev"; fi
+		Proceed; fi; fi
+
