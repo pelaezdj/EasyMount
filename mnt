@@ -36,6 +36,7 @@ function RemoveLast {
 	sed $SedString
 }
 
+MapperDev=""
 
 
 #########################
@@ -44,26 +45,18 @@ function RemoveLast {
 #                       #
 #########################
 
-function GetFilesystem {
-	User="$(whoami)"
-	if [[ $User == "root" ]]; then
-		Filesystem="$(blkid -o value -s TYPE /dev/$Dev)"
-	else
-		Filesystem="$(sudo blkid -o value -s TYPE /dev/$Dev)"; fi
-}
-
 function MountDevice {
 	SudoRun mkdir /mnt 2> /dev/null
 	SudoRun mkdir /mnt/$Dir 2> /dev/null
 
-	if [[ MapperDev == "" ]]; then
+	if [[ $MapperDev == "" ]]; then
 		EchoRun mount /dev/$Dev /mnt/$Dir
 	else
 		EchoRun mount /dev/mapper/$MapperDev /mnt/$Dir; fi
 }
 
 function UnmountDevice {
-	if [[ MapperDev == "" ]]; then
+	if [[ $MapperDev == "" ]]; then
 		EchoRun umount /dev/$Dev
 	else
 		EchoRun umount /dev/mapper/$MapperDev; fi
@@ -81,6 +74,13 @@ function LuksClose {
 		EchoRun cryptsetup luksClose /dev/mapper/$MapperDev; fi
 }
 
+function GetFilesystem {
+	User="$(whoami)"
+	if [[ $User == "root" ]]; then
+		Filesystem="$(blkid -o value -s TYPE /dev/$Dev)"
+	else
+		Filesystem="$(sudo blkid -o value -s TYPE /dev/$Dev)"; fi
+}
 
 function Proceed {
 	GetFilesystem
