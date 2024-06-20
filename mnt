@@ -36,7 +36,6 @@ function RemoveLast {
 	sed $SedString
 }
 
-MapperDev=""
 
 
 #########################
