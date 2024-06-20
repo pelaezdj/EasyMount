@@ -1,4 +1,4 @@
-I'm not a programmer but I'd like to share my nonsense.
+I'm not a programmer by trade but I'd like to share my nonsense.
 
 Just over 100 lines...
 
